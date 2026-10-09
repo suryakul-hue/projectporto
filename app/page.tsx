@@ -854,7 +854,6 @@ export default function Home() {
             <ul className={`nav-menu ${mobileOpen ? "open" : ""}`}>
               <li><button className={activeNav === "home" ? "active" : ""} onClick={(e) => scrollToSection(e, "home")}>Home</button></li>
               <li><a href="/about">About</a></li>
-              <li><a href="/helpdesk">Helpdesk</a></li>
             </ul>
           </div>
           <button className={`mobile-toggle ${mobileOpen ? "open" : ""}`} onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menu">

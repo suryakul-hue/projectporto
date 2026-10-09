@@ -319,7 +319,6 @@ export default function About() {
             <ul className={`nav-menu ${mobileOpen ? "open" : ""}`}>
               <li><a href="/">Home</a></li>
               <li><a href="/about" className="active">About</a></li>
-              <li><a href="/helpdesk">Helpdesk</a></li>
             </ul>
           </div>
           <button className={`mobile-toggle ${mobileOpen ? "open" : ""}`} onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menu">
