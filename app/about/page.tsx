@@ -317,7 +317,7 @@ export default function About() {
               />
             </a>
             <ul className={`nav-menu ${mobileOpen ? "open" : ""}`}>
-              <li><a href="/home">Home</a></li>
+              <li><a href="/">Home</a></li>
               <li><a href="/about" className="active">About</a></li>
               <li><a href="/helpdesk">Helpdesk</a></li>
             </ul>
