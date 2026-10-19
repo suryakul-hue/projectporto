@@ -758,7 +758,7 @@ export default function Home() {
         <div className="noise" />
       </div>
 
-      {/* Header */}
+{/* Header */}
       <header className={navHidden ? "nav-hidden" : ""}>
         <div className="nav-wrapper">
           <div className="nav-left">
@@ -772,10 +772,34 @@ export default function Home() {
               />
             </a>
             <ul className={`nav-menu ${mobileOpen ? "open" : ""}`}>
-              <li><button className={activeNav === "home" ? "active" : ""} onClick={(e) => scrollToSection(e, "home")}>Home</button></li>
-              <li><a href="/about">About</a></li>
+              <li>
+                <button 
+                  className={activeNav === "home" ? "active" : ""} 
+                  onClick={(e) => scrollToSection(e, "home")}
+                >
+                  Home
+                </button>
+              </li>
+              <li>
+                <a href="/about">About</a>
+              </li>
+              
+              {/* --- MENU ORDER DITAMBAHKAN DI SINI --- */}
+              <li>
+                <a 
+                  href="/order" 
+                  style={{ color: "#f472b6", fontWeight: "600" }} 
+                  onMouseOver={(e) => (e.currentTarget.style.color = "#f9a8d4")} 
+                  onMouseOut={(e) => (e.currentTarget.style.color = "#f472b6")}
+                >
+                  Order Commission
+                </a>
+              </li>
+              {/* -------------------------------------- */}
+
             </ul>
           </div>
+          
           <button
             className={`mobile-toggle ${mobileOpen ? "open" : ""}`}
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -784,6 +808,7 @@ export default function Home() {
           >
             <span /><span /><span />
           </button>
+          
           <a href="/contact" className="contact-btn">Contact</a>
         </div>
       </header>
