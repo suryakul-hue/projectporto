@@ -1,94 +1,134 @@
-"use client"; // Wajib ditambahkan agar bisa mendeteksi menu aktif & toggle buka-tutup
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+"use client";
+
 import { useState } from "react";
+import Link from "next/link";
 
-export default function Navbar() {
-  const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+export default function OrderPage() {
+  const [formData, setFormData] = useState({
+    name: "",
+    contact: "",
+    category: "Illustration",
+    description: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  // Daftar menu untuk mempermudah render & deteksi aktif
-  const navLinks = [
-    { name: "Projects", path: "/" },
-    { name: "About Me", path: "/about" },
-  ];
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatusMsg(null);
+
+    try {
+      const res = await fetch("https://ysurtod.fun/api/order.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setStatusMsg({
+          type: "success",
+          text: "Pesanan berhasil dikirim! Aku bakal hubungi kamu segera.",
+        });
+        setFormData({ name: "", contact: "", category: "Illustration", description: "" });
+      } else {
+        setStatusMsg({
+          type: "error",
+          text: data.message || "Gagal mengirim pesanan. Coba lagi ya!",
+        });
+      }
+    } catch (err) {
+      setStatusMsg({
+        type: "error",
+        text: "Terjadi kesalahan koneksi ke server API.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-neutral-800/80 bg-neutral-950/70 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
-        
-        {/* Brand Logo */}
-        <Link 
-          href="/" 
-          className="text-base font-bold tracking-wider text-white transition hover:text-pink-400"
-        >
-          SURYAKUL<span className="text-pink-500">.</span>
-        </Link>
-
-        {/* --- DESKTOP NAVIGATION --- */}
-        <nav className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.path}
-              href={link.path} 
-              // Jika URL saat ini sama dengan path menu, teks jadi pink, jika tidak netral
-              className={`text-sm font-medium transition ${
-                pathname === link.path 
-                  ? "text-pink-400" 
-                  : "text-neutral-400 hover:text-white"
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-          
-          <Link 
-            href="/order" 
-            className="rounded-full bg-pink-600 px-4 py-1.5 text-xs font-semibold text-white shadow-lg shadow-pink-600/20 transition hover:bg-pink-500 active:scale-95"
-          >
-            Order Commission
-          </Link>
-        </nav>
-
-        {/* --- MOBILE MENU BUTTON (HAMBURGER) --- */}
-        <button 
-          className="md:hidden text-neutral-400 hover:text-white focus:outline-none"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {isOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-            )}
-          </svg>
-        </button>
-      </div>
-
-      {/* --- MOBILE DROPDOWN MENU --- */}
-      {isOpen && (
-        <div className="md:hidden border-t border-neutral-800 bg-neutral-900/95 backdrop-blur-md px-6 py-4 flex flex-col gap-4">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              href={link.path}
-              onClick={() => setIsOpen(false)} // Tutup menu saat diklik
-              className={`text-sm font-medium transition ${
-                pathname === link.path ? "text-pink-400" : "text-neutral-400"
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-          <Link
-            href="/order"
-            onClick={() => setIsOpen(false)}
-            className="w-full text-center rounded-lg bg-pink-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-pink-500"
-          >
-            Order Commission
+    <div className="min-h-screen bg-neutral-950 text-white flex flex-col justify-center items-center p-6">
+      <div className="w-full max-w-lg rounded-2xl border border-neutral-800 bg-neutral-900 p-8 shadow-2xl">
+        <div className="flex items-center justify-between border-b border-neutral-800 pb-4 mb-6">
+          <div>
+            <h1 className="text-xl font-bold text-white">Commission Request</h1>
+            <p className="text-xs text-neutral-400">Isi detail pesananmu di bawah ini</p>
+          </div>
+          <Link href="/" className="text-xs text-neutral-400 hover:text-white transition underline">
+            ← Kembali
           </Link>
         </div>
-      )}
-    </header>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-sm">
+          <div>
+            <label className="text-xs font-medium text-neutral-400">Nama / Username</label>
+            <input
+              type="text"
+              required
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2.5 text-white focus:border-pink-500 focus:outline-none transition"
+              placeholder="e.g. Suryakul"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-neutral-400">Kontak (Discord / Email / IG)</label>
+            <input
+              type="text"
+              required
+              value={formData.contact}
+              onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2.5 text-white focus:border-pink-500 focus:outline-none transition"
+              placeholder="e.g. discord#1234 atau email@domain.com"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-neutral-400">Kategori Komisi</label>
+            <select
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2.5 text-white focus:border-pink-500 focus:outline-none transition"
+            >
+              <option value="Illustration">Illustration</option>
+              <option value="Video Editing">Video Editing / AMV</option>
+              <option value="3D Animation / Blender">3D Animation / Blender</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-neutral-400">Deskripsi / Brief Karya</label>
+            <textarea
+              rows={4}
+              required
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2.5 text-white focus:border-pink-500 focus:outline-none transition"
+              placeholder="Jelaskan konsep, karakter, deadline, atau sertakan link referensi..."
+            />
+          </div>
+
+          {statusMsg && (
+            <p className={`text-xs font-medium p-3 rounded-lg border ${statusMsg.type === "success" ? "bg-emerald-950/50 border-emerald-800 text-emerald-400" : "bg-pink-950/50 border-pink-800 text-pink-400"}`}>
+              {statusMsg.text}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-2 w-full rounded-lg bg-pink-600 py-3 font-semibold text-white hover:bg-pink-500 active:scale-95 disabled:opacity-50 transition"
+          >
+            {loading ? "Mengirim..." : "Kirim Pesanan"}
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
