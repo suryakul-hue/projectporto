@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $host = "localhost";
 $db_user = "u861468617_admin";
-$db_pass = "r3;dA6Ng6Q|";
+$db_pass = "Surya12345/";
 $db_name = "u861468617_commission";
 
 $conn = new mysqli($host, $db_user, $db_pass, $db_name);
